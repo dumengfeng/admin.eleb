@@ -26,7 +26,6 @@
             </div>
             <div class="form-group">
                 <label for="exampleInputPassword1">店铺图片:</label>
-                <input type="file" name="shop_img" class="" id="" placeholder="">
                 <img src="{{ $edit->shops->shop_img }}" alt="">
             </div>
             <div class="form-group">

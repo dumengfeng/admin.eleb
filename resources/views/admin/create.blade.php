@@ -11,6 +11,16 @@
             <label for="exampleInputEmail1">账号邮箱:</label>
             <input type="text" name="email" class=" " id="exampleInputEmail1" placeholder="">
         </div>
+
+        <div class="form-group">
+            <label for="exampleInputEmail1">选择角色权限:</label>
+            @foreach($Role as $val)
+                <label class="checkbox-inline">
+                    <input type="checkbox" name="role[]" value="{{ $val->id }}"> {{$val->name}}
+                </label>
+            @endforeach
+        </div>
+
         <div class="form-group">
             <label for="exampleInputEmail1">账号密码:</label>
             <input type="password" name="password" class=" " id="exampleInputEmail1" placeholder="">

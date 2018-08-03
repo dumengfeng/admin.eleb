@@ -6,8 +6,7 @@
             <th>id</th>
             <th>账号</th>
             <th>邮箱</th>
-            <th>密码</th>
-
+            <th>所属角色</th>
             <th>操作</th>
         </tr>
         @foreach($all as $value)
@@ -15,7 +14,11 @@
                 <td>{{ $value->id }}</td>
                 <td>{{ $value->name }}</td>
                 <td>{{ $value->email }}</td>
-                <td>{{ $value->password }}</td>
+                <td>
+                    @foreach($value->roles as $v)
+                        {{ $v->name }}
+                    @endforeach
+                </td>
                 <td>
                     <form action="{{ route('admin.destroy',[$value]) }}" method="post">
                         <button type="button" class="btn btn-default btn-sm" aria-label="Left Align" title="编辑">
@@ -36,4 +39,5 @@
             </tr>
         @endforeach
     </table>
+    {{ $all->links() }}
 @stop

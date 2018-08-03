@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
 class AdminsController extends Controller
 {
@@ -19,14 +21,15 @@ class AdminsController extends Controller
     }
     public function index()
     {
-        $all = Admins::all();
+        $all = Admins::paginate(2);
         return view('admin/index', compact('all', [$all]));
     }
 
     public function create()
     {
         $shopcategories = DB::table('shopcategories')->get();
-        return view('admin/create', compact('shopcategories', $shopcategories));
+        $Role = Role::all();
+        return view('admin/create', compact('shopcategories','Role'));
     }
 
     public function store(Request $request)
@@ -36,6 +39,7 @@ class AdminsController extends Controller
             'name' => 'required|max:10',
             'email' => 'required',
             'password' => 'required|same:repassword',
+            'role' => 'required',
 
         ], [
             'name.required' => '账号名称不能为空',
@@ -43,13 +47,15 @@ class AdminsController extends Controller
             'email.required' => '账号邮箱不能为空',
             'password.required' => '账号密码不能为空',
             'password.same' => '账号密码与确认密码不能相同',
+            'role.required' => '角色权限不能为空',
         ]);
 
-        $model = Admins::create([
+        $user = Admins::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' =>bcrypt($request->password),
         ]);
+        $user->assignRole($request->role);
         //设置提示信息
         session()->flash('success', '添加成功');
         return redirect()->route('admin.index');
@@ -57,7 +63,10 @@ class AdminsController extends Controller
 
     public function edit(admins $admin)
     {
-        return view('admin/edit', ['edit' => $admin]);
+//        $edit = Role::findById($Role->id);
+//dd($admin);
+        $Role = Role::all();
+        return view('admin/edit',compact('admin','Role'));
     }
 
     public function update(admins $admin, Request $request)
@@ -67,18 +76,21 @@ class AdminsController extends Controller
         $this->validate($request, [
             'name' => 'required', 'max:10',
             'email' => ['required',Rule::unique('admins')->ignore($admin->id)],
+            'Role' => 'required',
 
         ], [
             'name.required' => '账号名称不能为空',
             'name.max' => '账号名称不能超过10个字',
             'email.required' => '账号邮箱不能为空',
             'email.unique'=>'邮箱不能相同',
+            'Role.required' => '角色权限不能为空',
         ]);
 
         $admin->update([
             'name' => $request->name,
             'email' => $request->email,
         ]);
+        $admin ->syncRoles($request->Role);
         return redirect()->route('admin.index');
     }
 

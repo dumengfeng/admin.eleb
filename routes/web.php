@@ -44,3 +44,25 @@ Route::patch('/user/{user}/save', 'UserController@save')->name('user.save');//�
 Route::resource('member', 'MembersController');
 Route::get('/member/{member}/pwd','MembersController@pwd')->name('member.qz');//修改密码表单
 Route::patch('/member/{member}/save', 'MembersController@save')->name('member.save');//更新密码信息
+Route::get('/member/{member}/qy', 'MembersController@qy')->name('member.qy');//启用会员账号
+
+//统计菜品
+Route::get('/count', 'ShopsController@count')->name('shops.count');//菜品列表
+Route::get('/count_day', 'ShopsController@count_day')->name('shops.count_day');//菜品列表(日)
+Route::get('/count_month', 'ShopsController@count_month')->name('shops.count_month');//菜品列表(月)
+//统计订单
+Route::get('/mc', 'ShopsController@shop_count')->name('shops.mc');//菜品列表
+Route::get('/mc_day', 'ShopsController@shop_count_day')->name('shops.mc_day');//菜品列表(日)
+Route::get('/mc_month', 'ShopsController@shop_count_month')->name('shops.mc_month');//菜品列表(月)
+//权限管理
+Route::resource('Rbac', 'RbacController');
+//角色管理
+Route::resource('Role', 'RoleController');
+//导航栏管理
+Route::resource('Nav', 'NavController');
+//发邮件
+Route::get('/send','UserController@send');
+//抽奖活动表 events
+Route::resource('Event', 'EventController');
+//活动报名表 event_members
+Route::resource('EventMember', 'EventMemberController');

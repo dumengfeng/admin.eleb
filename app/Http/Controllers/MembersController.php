@@ -9,10 +9,16 @@ use Illuminate\Validation\Rule;
 
 class MembersController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $all = Member::all();;
-        return view('member/index', compact('all', [$all]));
+        $keyword = '';
+        if($request->keyword){
+            $keyword = $request->keyword;
+            $all = Member::where('username','like','%'.$keyword.'%')->paginate(5);//包含功能分页搜索
+        }else{
+            $all = Member::paginate(5);//包含功能分页
+        }
+        return view('member/index', compact('all', 'keyword'));
     }
 
     public function create()
@@ -39,6 +45,7 @@ class MembersController extends Controller
             'username' => $request->username,
             'tel' => $request->tel,
             'password' => bcrypt($request->password),
+            'status'=>1,
         ]);
         //设置提示信息
         session()->flash('success', '添加成功');
@@ -72,21 +79,15 @@ class MembersController extends Controller
 
     public function destroy(member $member)
     {
-        Shops::updated([
-            'status' => -1,
-        ]);
         $member->update([
             'status' => 0,
         ]);
 
         return redirect()->route('member.index')->with('success','禁用成功');
     }
-    public function qz(member $member)
+    public function qy(member $member)
     {
-        Shops::updated([
-            'status' => 1,
-        ]);
-        $member->update([
+        $rel=$member->update([
             'status' => 1,
         ]);
 

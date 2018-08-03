@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Storage;
 
 class User extends Model
 {
+    protected $table='users';
     //允许赋值和修改的字段
     protected $fillable = ['name','email','password','shop_category_id','shop_name','shop_img','brand','on_time','fengniao','bao','piao','zhun','start_send','send_cost','notice','discount','status','shop_id'];
     //获取logo的真实地址
