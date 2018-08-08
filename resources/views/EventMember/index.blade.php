@@ -11,7 +11,9 @@
         @foreach($EventMember as $value)
             <tr>
                 <td>{{ $value->id }}</td>
-                <td>{{ $value->title }}</td>
+                <td>{{ $value->article->title }}</td>
+                <td>{{ $value->shops->shop_name }}</td>
+                <td>
                     <form action="{{ route('EventMember.destroy',[$value]) }}" method="post">
                         <button type="button" class="btn btn-default btn-sm" aria-label="Left Align" title="查看详情"><a href="{{ route('EventMember.show',[$value]) }}"><span class="glyphicon glyphicon-edit" aria-hidden="true" style="color: #000">查看详情</span></a></button>
                         {{ csrf_field() }}

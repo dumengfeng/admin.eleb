@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Event;
+use App\Models\EventMember;
+use App\Models\EventPrize;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
@@ -47,7 +49,7 @@ class EventController extends Controller
 //        dd($request->signup_start);
         $Event = Event::create(array(
             'title' => $request->title,
-            'content' => $request->content,
+            'content' => $request->input('content'),
             'signup_start' => strtotime($request->signup_start),
             'signup_end' => strtotime($request->signup_end),
             'prize_date' => $request->prize_date,
@@ -87,7 +89,7 @@ class EventController extends Controller
         ]);
         $Event->update([
             'title' => $request->title,
-            'content' => $request->content,
+            'content' => $request->input('content'),
             'signup_start' => strtotime($request->signup_start),
             'signup_end' => strtotime($request->signup_end),
             'prize_date' => $request->prize_date,
@@ -101,12 +103,64 @@ class EventController extends Controller
 
     public function show(Event $Event)
     {
-        return view('Event/show',compact('Event'));
+        $person = count(EventMember::select()->where('events_id',$Event->id)->get());
+        return view('Event/show',compact('Event','person'));
     }
 
     public function destroy(Event $Event)
     {
         $Event->delete();
+        return redirect()->route('Event.index');
+    }
+
+    //开奖
+    public function Lottery(Event $Event)
+    {
+//        dd(auth()->user()->id);
+        if(Event::where('id',$Event->id)->first()->is_prize==1){
+            session()->flash('danger', '已开奖');
+            return redirect()->route('Event.index');
+        }
+        //判断是否有人
+
+        $Event_num=count(EventMember::where('events_id',$Event->id)->get());
+        if ($Event_num<1){
+            session()->flash('danger', '没人报名或人数少于3人,不能开奖');
+            return redirect()->route('Event.index');
+        }
+        //开奖
+        $array='';
+        $num = EventMember::where('events_id',$Event->id)->get();
+        foreach ($num as $val){
+            $array[]=$val->member_id;
+        }
+        shuffle($array);
+        //奖品
+        $prize='';
+        $num_prize = EventPrize::where('events_id',$Event->id)->get();
+
+        if (EventPrize::where('events_id',$Event->id)->first()==null){
+            session()->flash('danger', '没有奖品,不能开奖');
+            return redirect()->route('Event.index');
+        }
+        foreach ($num_prize as $value){
+            $prize[]=$value->id;
+        }
+        $result2=[];
+        $result = [];
+        foreach ($prize as $k=>$val){
+            if(!isset($array[$k])) break;
+            $result[$val] = $array[$k];
+            EventPrize::where('id',$prize[$k])->update([
+                'member_id'=>$result[$val],
+            ]);
+        }
+
+        $Event->update([
+            'is_prize' =>1,
+        ]);
+        //设置提示信息
+        session()->flash('success', '开奖成功');
         return redirect()->route('Event.index');
     }
 }

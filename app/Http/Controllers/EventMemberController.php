@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use App\Models\EventMember;
 use Illuminate\Http\Request;
 
@@ -16,6 +17,4 @@ class EventMemberController extends Controller
     {
         return view('EventMember/show',compact('EventMember'));
     }
-
-
 }

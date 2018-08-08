@@ -29,6 +29,9 @@ Route::resource('user', 'UserController');
 Route::get('/user/{user}/qy', 'UserController@qy')->name('user.qy');//启用
 
 Route::resource('admin', 'AdminsController');
+//活动
+Route::resource('Article', 'ArticleController');
+Route::get('/gethtml','ArticleController@gethtml')->name('Event.gethtml');
 
 Route::get('/', 'SessionsController@create')->name('Sessions.login');//显示登录页面
 Route::post('/login', 'SessionsController@store')->name('up.login');//创建新会话（登录）
@@ -64,5 +67,23 @@ Route::resource('Nav', 'NavController');
 Route::get('/send','UserController@send');
 //抽奖活动表 events
 Route::resource('Event', 'EventController');
+//开奖
+Route::get('/Lottery/{Event}','EventController@Lottery')->name('Event.Lottery');
+
 //活动报名表 event_members
 Route::resource('EventMember', 'EventMemberController');
+//抽奖活动奖品表 event_prizes
+Route::resource('EventPrize', 'EventPrizeController');
+
+//中文词典
+Route::get('/search',function (\Illuminate\Support\Facades\Request $request){
+    $cl = new \App\SphinxClient();
+    $cl->SetServer ( '127.0.0.1', 9312);
+    $cl->SetConnectTimeout ( 10 );
+    $cl->SetArrayResult ( true );
+    $cl->SetMatchMode ( SPH_MATCH_EXTENDED2);
+    $cl->SetLimits(0, 1000);
+    $info = '北京';
+    $res = $cl->Query($info, 'shop');//shopstore_search
+    print_r($res);
+});

@@ -67,6 +67,7 @@ class NavController extends Controller
             'pid.required' => '菜单上级菜单不能为空',
             'permission_id.required' => '菜单权限不能为空',
         ]);
+        dd($request->pid);
         $Nav->update([
             'name' => $request->name,
             'url' => $request->url,

@@ -32,20 +32,18 @@
                 <td>
                     <form action="{{ route('Event.destroy',[$value]) }}" method="post">
                         <button type="button" class="btn btn-default btn-sm" aria-label="Left Align" title="编辑">
-                            <a href="{{ route('Event.edit',[$value]) }}"><span class="glyphicon glyphicon-edit"
-                                                                               aria-hidden="true"
-                                                                               style="color: #000">编辑</span></a>
+                            <a href="{{ route('Event.edit',[$value]) }}"><span class="glyphicon glyphicon-edit" aria-hidden="true" style="color: #000">编辑</span></a>
                         </button>
-
                         <button type="button" class="btn btn-default btn-sm" aria-label="Left Align" title="查看详情">
-                            <a href="{{ route('Event.show',[$value]) }}"><span class="glyphicon glyphicon-edit"
-                                                                               aria-hidden="true"
-                                                                               style="color: #000">查看详情</span></a>
+                            <a href="{{ route('Event.show',[$value]) }}"><span class="glyphicon glyphicon-edit" aria-hidden="true" style="color: #000">查看详情</span></a>
                         </button>
                         {{ csrf_field() }}
                         {{ method_field('DELETE') }}
                         <button type="submit" class="btn btn-default btn-sm" aria-label="Left Align" title="删除">
                             <span class="glyphicon glyphicon-trash" aria-hidden="true" style="color: red">删除</span>
+                        </button>
+                        <button type="button" class="btn btn-default btn-sm" aria-label="Left Align" title="查看详情">
+                            <a href="{{ route('EventPrize.create',['id'=>$value->id]) }}"><span class="glyphicon glyphicon-edit" aria-hidden="true" style="color: #000">添加奖品</span></a>
                         </button>
                     </form>
                 </td>
